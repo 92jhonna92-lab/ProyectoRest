@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 import funciones_login
-
+from menu import abrir_menu
 ventana = tk.Tk()
 ventana.title("Login-Restaurante")
 ventana.geometry("800x600")
@@ -28,6 +28,12 @@ def abrir_ventana_principal(usuario):
         font=("Arial", 24),
         bg="snow",
     ).pack(pady=30)
+
+    tk.Button(
+        ventana_principal,
+        text="Ver menú",
+        command=lambda: abrir_menu(ventana_principal, es_admin=(usuario == "admin")),
+    ).pack(pady=10)
 
     tk.Button(
         ventana_principal,
