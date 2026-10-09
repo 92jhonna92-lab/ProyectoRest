@@ -1,0 +1,68 @@
+[
+    {
+        "id": 1,
+        "nombre": "Silpancho",
+        "precio": 35.0,
+        "categoria": "plato"
+    },
+    {
+        "id": 2,
+        "nombre": "Pique macho",
+        "precio": 45.0,
+        "categoria": "plato"
+    },
+    {
+        "id": 3,
+        "nombre": "Pollo a la plancha",
+        "precio": 32.0,
+        "categoria": "plato"
+    },
+    {
+        "id": 4,
+        "nombre": "Sopa de maní",
+        "precio": 25.0,
+        "categoria": "plato"
+    },
+    {
+        "id": 5,
+        "nombre": "Refresco",
+        "precio": 10.0,
+        "categoria": "bebida"
+    },
+    {
+        "id": 6,
+        "nombre": "Jugo de naranja",
+        "precio": 12.0,
+        "categoria": "bebida"
+    },
+    {
+        "id": 7,
+        "nombre": "Agua ",
+        "precio": 7.0,
+        "categoria": "bebida"
+    },
+    {
+        "id": 8,
+        "nombre": "Cerveza",
+        "precio": 20.0,
+        "categoria": "bebida"
+    },
+    {
+        "id": 9,
+        "nombre": "Gelatina",
+        "precio": 15.0,
+        "categoria": "postre"
+    },
+    {
+        "id": 10,
+        "nombre": "Flan",
+        "precio": 14.0,
+        "categoria": "postre"
+    },
+    {
+        "id": 11,
+        "nombre": "Torta de chocolate",
+        "precio": 18.0,
+        "categoria": "postre"
+    }
+]
