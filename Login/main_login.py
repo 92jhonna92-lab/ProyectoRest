@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import messagebox
 import funciones_login
 from menu import abrir_menu
+
+
 ventana = tk.Tk()
 ventana.title("Login-Restaurante")
 ventana.geometry("800x600")
