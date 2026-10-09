@@ -14,6 +14,9 @@ def iniciar_sesion():
 
     if funciones_login.login(usuario, contraseña):
         abrir_ventana_principal(usuario)
+    elif funciones_login.loginC(usuario,contraseña):
+        abrir_ventana_cliente(usuario)
+
     else:
         messagebox.showerror("Error", "Usuario o contraseña incorrectos")
 def abrir_ventana_principal(usuario):
@@ -34,6 +37,26 @@ def abrir_ventana_principal(usuario):
         text="Ver menú",
         command=lambda: abrir_menu(ventana_principal, es_admin=(usuario == "admin")),
     ).pack(pady=10)
+
+    tk.Button(
+        ventana_principal,
+        text="Cerrar sesión",
+        command=ventana_principal.destroy,
+    ).pack(pady=10)
+
+def abrir_ventana_cliente(usuario):
+    ventana_principal = tk.Toplevel(ventana)
+    ventana_principal.title("Restaurante")
+    ventana_principal.geometry("800x600")
+    ventana_principal.configure(bg="snow")
+
+    tk.Label(
+        ventana_principal,
+        text=f"Bienvenido cliente, {usuario}",
+        font=("Arial", 24),
+        bg="snow",
+    ).pack(pady=30)
+
 
     tk.Button(
         ventana_principal,
