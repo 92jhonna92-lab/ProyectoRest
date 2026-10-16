@@ -1,4 +1,4 @@
-#ProyectoRest - Sistema de Restaurante
+# ProyectoRest - Sistema de Restaurante
 Sistema de gestion de un restaurante hecha en python con interfaz gráfica (tkinter).
 Proyecto control de inventario y ventas para un restaurante.
 ## Funciones
