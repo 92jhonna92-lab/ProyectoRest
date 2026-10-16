@@ -9,4 +9,4 @@ Menu con platos,bebidas y postres filtrado por categoria
 ## Integrantes 
 -Jhonnatan Delgadillo ([@92jhonna92-lab](https://github.com/92jhonna92-lab))
 -Sergio Ayala ([@sergio27698](https://github.com/sergio27698))
--Zabala 
+-Victor Zabala ([@victorzabala498-AgXg](https://github.com/victorzabala498-AgXg))
