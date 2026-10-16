@@ -59,6 +59,26 @@ def abrir_ventana_cliente(usuario):
         bg="snow",
     ).pack(pady=30)
 
+    tk.Label(
+        ventana_principal,
+        text="Consulta nuestro menú",
+        font=("Arial", 14),
+        bg="snow",
+    ).pack(pady=15)
+
+    tk.Button(
+        ventana_principal,
+        text="Ver menú",
+        font=("Arial", 12),
+        width=20,
+        command=lambda: abrir_menu(
+            ventana_principal,
+            es_admin=False
+
+        ),
+    ).pack(pady=15)
+    
+ 
 
     tk.Button(
         ventana_principal,
