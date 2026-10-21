@@ -2,7 +2,7 @@ import funciones_login
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from menu import abrir_menu
+from menu import abrir_menu, cargar_menu
 
 def abrir_ventana_principal(nombre_usuario,ventana):
     ventana_principal = tk.Toplevel(ventana)
@@ -14,10 +14,6 @@ def abrir_ventana_principal(nombre_usuario,ventana):
     area_contenido = None
     datos = {
 
-    "Menús": [("M-001", "Menú ejecutivo", "Almuerzo", "Bs 12,00", "Activo"),
-              ("M-002", "Menú vegetariano", "Almuerzo", "Bs 10,50", "Activo"),
-              ("M-003", "Desayuno completo", "Desayuno", "Bs 8,00", "Inactivo")],
-  
     "Pedidos": [("P-1048", "Mesa 04", "2", "Bs 24,00", "En preparación"),
                 ("P-1047", "Mesa 02", "3", "Bs 38,50", "Pendiente"),
                 ("P-1046", "Para llevar", "1", "Bs 14,00", "Listo")],
@@ -263,6 +259,30 @@ def abrir_ventana_principal(nombre_usuario,ventana):
 
         tabla_usuarios.bind("<<TreeviewSelect>>", actualizar_historial)
 
+    def administrar_menu():
+        """Abre la ventana del menú real y, al cerrarla, vuelve a dibujar la tabla."""
+        ventana_menu = abrir_menu(ventana_principal, es_admin=True)
+
+        def al_cerrar(evento):
+            # <Destroy> también se dispara por cada widget hijo: solo nos importa la ventana.
+            if evento.widget is not ventana_menu or modulo_actual != "Menús":
+                return
+            try:
+                mostrar_modulo("Menús")
+            except tk.TclError:
+                pass    # el panel se estaba cerrando al mismo tiempo: no hay nada que redibujar
+
+        ventana_menu.bind("<Destroy>", al_cerrar)
+
+    def dibujar_menus():
+        dibujar_encabezado("Menús", "Productos del restaurante (se guardan en menu.json).",
+                           "Administrar menú", administrar_menu)
+        caja_menu = ttk.LabelFrame(area_contenido, text="Productos", padding=10)
+        caja_menu.pack(fill="both", expand=True)
+        filas = [(p["id"], p["nombre"], p["categoria"].capitalize(), f"Bs {p['precio']:.2f}")
+                 for p in cargar_menu()]
+        dibujar_tabla(caja_menu, ("ID", "Nombre", "Categoría", "Precio"), filas, altura=12)
+
     def mostrar_modulo(nombre):
         nonlocal modulo_actual, area_contenido, encabezado
         modulo_actual = nombre
@@ -280,10 +300,7 @@ def abrir_ventana_principal(nombre_usuario,ventana):
         if nombre == "Resumen":
             dibujar_resumen()
         elif nombre == "Menús":
-            dibujar_pantalla_crud("Menús", "Administra platillos, categorías, precios y disponibilidad.",
-                                ("Código", "Nombre", "Categoría", "Precio", "Estado"), datos["Menús"],
-                                (("Categoría", ("Todas", "Almuerzo", "Desayuno")),
-                                ("Estado", ("Todos", "Activo", "Inactivo"))), "Nuevo menú")
+            dibujar_menus()
         elif nombre == "Pedidos":
             dibujar_pantalla_crud("Pedidos", "Administra pedidos y revisa su estado de preparación.",
                                 ("Pedido", "Mesa o canal", "Artículos", "Total", "Estado"), datos["Pedidos"],
