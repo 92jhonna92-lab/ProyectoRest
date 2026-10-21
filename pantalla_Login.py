@@ -16,18 +16,23 @@ def iniciar_sesion():
     contraseña = entry2.get()
 
     if funciones_login.login(nombre_usuario, contraseña):
-        ventana_dashboard=administrador.abrir_ventana_principal(nombre_usuario,ventana)
-        ventana.withdraw()  # Oculta la ventana de login
-    elif funciones_login.loginC(nombre_usuario,contraseña):
-        ventana_dashboard=usuario.abrir_ventana_cliente(nombre_usuario,ventana)
-        ventana.withdraw()  # Oculta la ventana de login
-
+        ventana_dashboard = administrador.abrir_ventana_principal(nombre_usuario, ventana)
+    elif funciones_login.loginC(nombre_usuario, contraseña):
+        ventana_dashboard = usuario.abrir_ventana_cliente(nombre_usuario, ventana)
     else:
         messagebox.showerror("Error", "Usuario o contraseña incorrectos")
         return
 
-    if ventana_dashboard is not None:
-        ventana.withdraw()  # Oculta la ventana de login
+    ventana.withdraw()  # Oculta la ventana de login
+
+    def volver_al_login(evento):
+        # <Destroy> avisa por cada botón y etiqueta de la ventana: solo nos importa la ventana.
+        if evento.widget is ventana_dashboard:
+            entry1.delete(0, tk.END)
+            entry2.delete(0, tk.END)
+            ventana.deiconify()  # Muestra otra vez el login
+
+    ventana_dashboard.bind("<Destroy>", volver_al_login)
 
 
 frame = tk.Frame(master=ventana, bg="snow")
@@ -55,4 +60,5 @@ button=tk.Button(
 button.pack(pady=12, padx=10)
 
 
-ventana.mainloop()
+def iniciar_aplicacion():
+    ventana.mainloop()

@@ -42,3 +42,5 @@ def abrir_ventana_cliente(nombre_usuario,ventana):
         text="Cerrar sesión",
         command=ventana_principal.destroy,
     ).pack(pady=10)
+
+    return ventana_principal
