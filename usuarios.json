@@ -1,0 +1,44 @@
+[
+    {
+        "id": 1,
+        "nombre": "Sergio",
+        "estado": "Activo",
+        "categoria": "Administrador"
+    },
+    {
+        "id": 2,
+        "nombre": "Jhonattan",
+        "estado": "Activo",
+        "categoria": "Administrador"
+    },
+    {
+        "id": 3,
+        "nombre": "Zabala",
+        "estado": "Activo",
+        "categoria": "Mesero"
+    },
+    {
+        "id": 4,
+        "nombre": "George",
+        "estado": "Inactivo",
+        "categoria": "Mascota"
+    },
+    {
+        "id": 5,
+        "nombre": "Mauri",
+        "estado": "Activo",
+        "categoria": "Mesero"
+    },
+    {
+        "id": 6,
+        "nombre": "ronaldo",
+        "estado": "Inactivo",
+        "categoria": "Mesero"
+    },
+    {
+        "id": 8,
+        "nombre": "Gabriel",
+        "estado": "Inactivo",
+        "categoria": "Administrador"
+    }
+]

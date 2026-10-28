@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from menu import abrir_menu, cargar_menu
+from usuarios import abrir_usuarios, cargar_usuarios
 
 def abrir_ventana_principal(nombre_usuario,ventana):
     ventana_principal = tk.Toplevel(ventana)
@@ -232,47 +233,47 @@ def abrir_ventana_principal(nombre_usuario,ventana):
                     ("QR", "83", "Bs 6.900,00")), altura=6)
 
     def dibujar_usuarios():
-        dibujar_encabezado("Usuarios", "Administra accesos, roles e historial de ventas.",
-                        "+  Nuevo usuario", lambda: mostrar_formulario("Usuarios"))
-        dibujar_barra_filtros(area_contenido, (("Rol", ("Todos", "Administradora", "Cajero", "Mesera")),
-                                            ("Estado", ("Todos", "Activo", "Inactivo"))))
-        caja_usuarios = ttk.LabelFrame(area_contenido, text="Usuarios del sistema", padding=10)
-        caja_usuarios.pack(fill="both", expand=True)
-        tabla_usuarios = dibujar_tabla(caja_usuarios, ("ID", "Nombre", "Rol", "Correo", "Estado"), datos["Usuarios"], altura=5)
-        dibujar_acciones(tabla_usuarios)
-        caja_historial = ttk.LabelFrame(area_contenido, text="Historial de ventas del usuario seleccionado", padding=10)
-        caja_historial.pack(fill="x", pady=(12, 0))
-        tabla_historial = dibujar_tabla(caja_historial, ("Venta", "Hora", "Origen", "Total", "Pago"), (), altura=2)
+        dibujar_encabezado("Usuarios", "Usuarios del restaurante (se guardan en menu.json).",
+                                   "Administrar usuarios", administrar_usuarios)
+        caja_menu = ttk.LabelFrame(area_contenido, text="Usuarios", padding=10)
+        caja_menu.pack(fill="both", expand=True)
+        filas = [(p["id"], p["nombre"], p["categoria"].capitalize(), p["estado"])
+                for p in cargar_usuarios()]
+        dibujar_tabla(caja_menu, ("ID", "Nombre", "Categoría", "Estado"), filas, altura=12)
 
-        ventas_por_usuario = {"Ana Pérez": (("V-2081", "12:42", "Mesa 04", "Bs 24,00", "Efectivo"),
-                                            ("V-2079", "12:31", "Para llevar", "Bs 14,00", "QR")),
-                            "Luis Rojas": (("V-2080", "12:37", "Mesa 02", "Bs 38,50", "Tarjeta"),)}
-
-        def actualizar_historial(_evento):
-            tabla_historial.delete(*tabla_historial.get_children())
-            seleccion = tabla_usuarios.selection()
-            if seleccion:
-                usuario = tabla_usuarios.item(seleccion[0], "values")
-                nombre_usuario = usuario[1]
-                for venta in ventas_por_usuario.get(nombre_usuario, ()):
-                    tabla_historial.insert("", "end", values=venta)
-
-        tabla_usuarios.bind("<<TreeviewSelect>>", actualizar_historial)
 
     def administrar_menu():
         """Abre la ventana del menú real y, al cerrarla, vuelve a dibujar la tabla."""
         ventana_menu = abrir_menu(ventana_principal, es_admin=True)
 
         def al_cerrar(evento):
-            # <Destroy> también se dispara por cada widget hijo: solo nos importa la ventana.
+
             if evento.widget is not ventana_menu or modulo_actual != "Menús":
                 return
             try:
                 mostrar_modulo("Menús")
             except tk.TclError:
-                pass    # el panel se estaba cerrando al mismo tiempo: no hay nada que redibujar
+                pass    # el panel se estaba cerrando al mismo tiempo: nohay nada que redibujar
 
         ventana_menu.bind("<Destroy>", al_cerrar)
+
+
+
+
+
+    def administrar_usuarios():
+        """Abre la ventana del menú real y, al cerrarla, vuelve a dibujar la tabla."""
+        ventana_usuarios = abrir_usuarios(ventana_principal, es_admin=True)
+        
+        def al_cerrar(evento):
+                    
+            if evento.widget is not ventana_usuarios or modulo_actual != "Usuarios":
+                return
+            try:
+                mostrar_modulo("Usuarios")
+            except tk.TclError:
+                pass    # el panel se estaba cerrando al mismo tiempo: no hay nada que redibujar
+        ventana_usuarios.bind("<Destroy>", al_cerrar)
 
     def dibujar_menus():
         dibujar_encabezado("Menús", "Productos del restaurante (se guardan en menu.json).",
