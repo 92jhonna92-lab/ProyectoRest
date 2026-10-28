@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
-import administrador,usuario,funciones_login
+import administrador,pantalla_usuario,funciones_login
 from menu import abrir_menu
+from usuarios import abrir_usuarios
 
 # estamos definiendo la ventana principal de la aplicación de login para el restaurante.
 ventana = tk.Tk()
@@ -18,7 +19,7 @@ def iniciar_sesion():
     if funciones_login.login(nombre_usuario, contraseña):
         ventana_dashboard = administrador.abrir_ventana_principal(nombre_usuario, ventana)
     elif funciones_login.loginC(nombre_usuario, contraseña):
-        ventana_dashboard = usuario.abrir_ventana_cliente(nombre_usuario, ventana)
+        ventana_dashboard = pantalla_usuario.abrir_ventana_cliente(nombre_usuario, ventana)
     else:
         messagebox.showerror("Error", "Usuario o contraseña incorrectos")
         return
