@@ -233,7 +233,7 @@ def abrir_ventana_principal(nombre_usuario,ventana):
                     ("QR", "83", "Bs 6.900,00")), altura=6)
 
     def dibujar_usuarios():
-        dibujar_encabezado("Usuarios", "Usuarios del restaurante (se guardan en menu.json).",
+        dibujar_encabezado("Usuarios", "Administradores y meseros (se guardan en usuarios.json).",
                                    "Administrar usuarios", administrar_usuarios)
         caja_menu = ttk.LabelFrame(area_contenido, text="Usuarios", padding=10)
         caja_menu.pack(fill="both", expand=True)
@@ -272,7 +272,7 @@ def abrir_ventana_principal(nombre_usuario,ventana):
             try:
                 mostrar_modulo("Usuarios")
             except tk.TclError:
-                pass    # el panel se estaba cerrando al mismo tiempo: no hay nada que redibujar
+                pass    
         ventana_usuarios.bind("<Destroy>", al_cerrar)
 
     def dibujar_menus():

@@ -1,8 +1,7 @@
-import json
-import os
+# los usuarios nuevos lo crea el admin con sus categorias
+from usuarios import buscar_cuenta
 
-def login(nombre_usuario,contraseña):
-    return nombre_usuario=="admin" and contraseña=="admin"
 
-def loginC(nombre_usuario,contraseña):
-    return nombre_usuario=="user" and contraseña=="user"
+def login(nombre_usuario, contraseña):
+    
+    return buscar_cuenta(nombre_usuario, contraseña)
