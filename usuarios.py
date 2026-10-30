@@ -32,29 +32,26 @@ def cargar_usuarios():
         return []
  
  
-def validar(nombre, precio_texto, categoria):
+def validar(nombre, estado_texto, categoria):
     
     nombre = nombre.strip()
     if not nombre:
         raise ValueError("El nombre no puede estar vacío.")
-    try:
-        precio = float(precio_texto.strip().replace(",", "."))
-    except ValueError:
-        raise ValueError("El precio debe ser un número (ejemplo: 25.50).")
-    if precio <= 0:
-        raise ValueError("El precio debe ser mayor que cero.")
+    estado=estado_texto.strip().capitalize()
+    if estado not in ["Activo","Inactivo"]:
+        raise ValueError("El estado debe ser Activo o Inactivo.")
     if categoria not in CATEGORIAS:
         raise ValueError("Elige una categoría: Administrador, Mesero , Mascota.")
-    return nombre, round(precio, 2), categoria
+    return nombre, estado, categoria
  
  
-def agregar_producto(nombre, precio_texto, categoria):
-    nombre, precio, categoria = validar(nombre, precio_texto, categoria)
+def agregar_producto(nombre, estado_texto, categoria):
+    nombre, estado, categoria = validar(nombre, estado_texto, categoria)
     usuarios = cargar_usuarios()
     nuevo = {
         "id": max((p["id"] for p in usuarios), default=0) + 1,
         "nombre": nombre,
-        "precio": precio,
+        "estado": estado,
         "categoria": categoria,
     }
     usuarios.append(nuevo)
@@ -62,13 +59,13 @@ def agregar_producto(nombre, precio_texto, categoria):
     return nuevo
  
  
-def editar_producto(id_producto, nombre, precio_texto, categoria):
-    nombre, precio, categoria = validar(nombre, precio_texto, categoria)
+def editar_producto(id_producto, nombre, estado_texto, categoria):
+    nombre, estado, categoria = validar(nombre, estado_texto, categoria)
     usuarios = cargar_usuarios()
     for producto in usuarios:
         if producto["id"] == id_producto:
             producto["nombre"] = nombre
-            producto["precio"] = precio
+            producto["estado"] = estado
             producto["categoria"] = categoria
             guardar_menu(usuarios)
             return producto
