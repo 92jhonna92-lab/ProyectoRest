@@ -16,18 +16,23 @@ def iniciar_sesion():
     nombre_usuario = entry1.get().strip()
     contraseña = entry2.get()
 
-    if funciones_login.login(nombre_usuario, contraseña):
-        ventana_dashboard = administrador.abrir_ventana_principal(nombre_usuario, ventana)
-    elif funciones_login.loginC(nombre_usuario, contraseña):
-        ventana_dashboard = pantalla_usuario.abrir_ventana_cliente(nombre_usuario, ventana)
+    cuenta = funciones_login.login(nombre_usuario, contraseña)
+    if cuenta is None:
+        messagebox.showerror("Error", "Usuario o contraseña incorrectos (o usuario inactivo)")
+        return
+
+    if cuenta["categoria"] == "Administrador":
+        ventana_dashboard = administrador.abrir_ventana_principal(cuenta["nombre"], ventana)
+    elif cuenta["categoria"] == "Mesero":
+        ventana_dashboard = pantalla_usuario.abrir_ventana_mesero(cuenta["nombre"], ventana)
     else:
-        messagebox.showerror("Error", "Usuario o contraseña incorrectos")
+        messagebox.showinfo("Sin acceso", f"La categoría '{cuenta['categoria']}' no tiene acceso al sistema.")
         return
 
     ventana.withdraw()  # Oculta la ventana de login
 
     def volver_al_login(evento):
-        # <Destroy> avisa por cada botón y etiqueta de la ventana: solo nos importa la ventana.
+        
         if evento.widget is ventana_dashboard:
             entry1.delete(0, tk.END)
             entry2.delete(0, tk.END)
