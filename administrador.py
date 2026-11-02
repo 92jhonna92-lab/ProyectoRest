@@ -1,9 +1,13 @@
-import funciones_login
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from menu import abrir_menu, cargar_menu
 from usuarios import abrir_usuarios, cargar_usuarios
+from ventas import abrir_ventas,cargar_ventas
+from mesas import abrir_mesas, cargar_mesas
+from pedidos import abrir_pedidos, cargar_pedidos
+
 
 def abrir_ventana_principal(nombre_usuario,ventana):
     ventana_principal = tk.Toplevel(ventana)
@@ -232,14 +236,7 @@ def abrir_ventana_principal(nombre_usuario,ventana):
                     (("Efectivo", "186", "Bs 14.820,00"), ("Tarjeta", "224", "Bs 26.540,00"),
                     ("QR", "83", "Bs 6.900,00")), altura=6)
 
-    def dibujar_usuarios():
-        dibujar_encabezado("Usuarios", "Usuarios del restaurante (se guardan en menu.json).",
-                                   "Administrar usuarios", administrar_usuarios)
-        caja_menu = ttk.LabelFrame(area_contenido, text="Usuarios", padding=10)
-        caja_menu.pack(fill="both", expand=True)
-        filas = [(p["id"], p["nombre"], p["categoria"].capitalize(), p["estado"])
-                for p in cargar_usuarios()]
-        dibujar_tabla(caja_menu, ("ID", "Nombre", "Categoría", "Estado"), filas, altura=12)
+   
 
 
     def administrar_menu():
@@ -262,18 +259,29 @@ def abrir_ventana_principal(nombre_usuario,ventana):
 
 
     def administrar_usuarios():
-        """Abre la ventana del menú real y, al cerrarla, vuelve a dibujar la tabla."""
         ventana_usuarios = abrir_usuarios(ventana_principal, es_admin=True)
-        
+
         def al_cerrar(evento):
-                    
             if evento.widget is not ventana_usuarios or modulo_actual != "Usuarios":
                 return
             try:
                 mostrar_modulo("Usuarios")
             except tk.TclError:
-                pass    # el panel se estaba cerrando al mismo tiempo: no hay nada que redibujar
+                pass
+
         ventana_usuarios.bind("<Destroy>", al_cerrar)
+
+    def dibujar_usuarios():
+        dibujar_encabezado("Usuarios", "Gestión de usuarios y personal (se guardan en usuarios.json con contraseña).",
+                           "Administrar usuarios", administrar_usuarios)
+        caja_menu = ttk.LabelFrame(area_contenido, text="Usuarios registrados", padding=10)
+        caja_menu.pack(fill="both", expand=True)
+        
+        filas = [(p["id"], p["nombre"], p["categoria"], p["estado"])
+                for p in cargar_usuarios()]
+        dibujar_tabla(caja_menu, ("ID", "Nombre", "Categoría", "Estado"), filas, altura=12)
+
+
 
     def dibujar_menus():
         dibujar_encabezado("Menús", "Productos del restaurante (se guardan en menu.json).",
@@ -283,6 +291,94 @@ def abrir_ventana_principal(nombre_usuario,ventana):
         filas = [(p["id"], p["nombre"], p["categoria"].capitalize(), f"Bs {p['precio']:.2f}")
                  for p in cargar_menu()]
         dibujar_tabla(caja_menu, ("ID", "Nombre", "Categoría", "Precio"), filas, altura=12)
+
+
+    def administrar_ventas():
+        ventana_ventas = abrir_ventas(ventana_principal, es_admin=True)
+
+        def al_cerrar(evento):
+            if evento.widget is not ventana_ventas or modulo_actual != "Ventas":
+                return
+            try:
+                mostrar_modulo("Ventas")
+            except tk.TclError:
+                pass
+
+        ventana_ventas.bind("<Destroy>", al_cerrar)
+
+    def dibujar_ventas():
+        dibujar_encabezado("Ventas", "Consulta transacciones y registra nuevas ventas (se guardan en ventas.json).",
+                           "Administrar ventas", administrar_ventas)
+        caja_ventas = ttk.LabelFrame(area_contenido, text="Transacciones recientes", padding=10)
+        caja_ventas.pack(fill="both", expand=True)
+
+        filas = [(v["id"], v["hora"], v["vendedor"], v["origen"], f"Bs {v['total']:.2f}", v["pago"])
+                for v in cargar_ventas()] ##2222
+        dibujar_tabla(caja_ventas, ("ID", "Hora", "Vendedor", "Origen", "Total", "Método Pago"), filas, altura=12)
+
+
+    def administrar_mesas():
+        ventana_mesas = abrir_mesas(ventana_principal, es_admin=True)
+
+        def al_cerrar(evento):
+            if evento.widget is not ventana_mesas or modulo_actual != "Mesas":
+                return
+            try:
+                mostrar_modulo("Mesas")
+            except tk.TclError:
+                pass
+
+        ventana_mesas.bind("<Destroy>", al_cerrar)
+
+    def dibujar_mesas():
+        dibujar_encabezado("Mesas", "Consulta la disponibilidad y ocupación por área (se guardan en mesas.json).",
+                           "Administrar mesas", administrar_mesas)
+        
+        # Calcular indicadores basados en los datos reales
+        mesas_data = cargar_mesas()
+        total_mesas = len(mesas_data)
+        disponibles = sum(1 for m in mesas_data if m["estado"] == "Disponible")
+        ocupadas = sum(1 for m in mesas_data if m["estado"] == "Ocupada")
+        reservadas = sum(1 for m in mesas_data if m["estado"] == "Reservada")
+
+        dibujar_indicadores(area_contenido, (("TOTAL", str(total_mesas), "Salón, Terraza y VIP"),
+                                            ("DISPONIBLES", str(disponibles), "Listas para asignar"),
+                                            ("OCUPADAS", str(ocupadas), "En servicio"),
+                                            ("RESERVADAS", str(reservadas), "Con reserva activa")))
+
+        caja_mesas = ttk.LabelFrame(area_contenido, text="Estado de mesas", padding=10)
+        caja_mesas.pack(fill="both", expand=True)
+
+        filas = [(m["id"], m["nombre"], f"{m['capacidad']} personas", m["area"], m["estado"], m["detalle"])
+                for m in mesas_data]
+        dibujar_tabla(caja_mesas, ("ID", "Mesa", "Capacidad", "Área", "Estado", "Pedido o reserva"), filas, altura=9)
+
+
+    def administrar_pedidos():
+        """Abre la ventana Toplevel de gestión de pedidos y refresca al cerrar."""
+        ventana_pedidos = abrir_pedidos(ventana_principal, es_admin=True)
+
+        def al_cerrar(evento):
+            if evento.widget is not ventana_pedidos or modulo_actual != "Pedidos":
+                return
+            try:
+                mostrar_modulo("Pedidos")
+            except tk.TclError:
+                pass
+
+        ventana_pedidos.bind("<Destroy>", al_cerrar)
+
+    def dibujar_pedidos():
+        dibujar_encabezado("Pedidos", "Administra pedidos y revisa su estado de preparación (se guardan en pedidos.json).",
+                           "Administrar pedidos", administrar_pedidos)
+        
+        caja_pedidos = ttk.LabelFrame(area_contenido, text="Registros", padding=10)
+        caja_pedidos.pack(fill="both", expand=True)
+
+        filas = [(p["id"], p["mesa"], p["articulos"], f"Bs {p['total']:.2f}", p["estado"])
+                for p in cargar_pedidos()]
+        dibujar_tabla(caja_pedidos, ("Pedido", "Mesa o canal", "Artículos", "Total", "Estado"), filas, altura=12)
+
 
     def mostrar_modulo(nombre):
         nonlocal modulo_actual, area_contenido, encabezado
@@ -303,9 +399,7 @@ def abrir_ventana_principal(nombre_usuario,ventana):
         elif nombre == "Menús":
             dibujar_menus()
         elif nombre == "Pedidos":
-            dibujar_pantalla_crud("Pedidos", "Administra pedidos y revisa su estado de preparación.",
-                                ("Pedido", "Mesa o canal", "Artículos", "Total", "Estado"), datos["Pedidos"],
-                                (("Estado", ("Todos", "Pendiente", "En preparación", "Listo", "Entregado")),), "Nuevo pedido")
+            dibujar_pedidos()
         elif nombre == "Mesas":
             dibujar_mesas()
         elif nombre == "Finanzas":
@@ -318,9 +412,6 @@ def abrir_ventana_principal(nombre_usuario,ventana):
         elif nombre == "Usuarios":
             dibujar_usuarios()
         elif nombre == "Ventas":
-            dibujar_pantalla_crud("Ventas", "Consulta transacciones y registra nuevas ventas.",
-                                ("Venta", "Hora", "Vendedor", "Origen", "Total", "Pago"), datos["Ventas"],
-                                (("Fecha", ("Hoy", "Ayer", "Esta semana")),
-                                ("Método", ("Todos", "Efectivo", "Tarjeta", "QR"))), "Registrar venta")
+            dibujar_ventas()
     mostrar_modulo("Resumen")
     return ventana_principal
