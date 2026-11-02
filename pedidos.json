@@ -1,0 +1,23 @@
+[
+    {
+        "id": "P-1049",
+        "mesa": "Mesa 02",
+        "articulos": "1x Silpancho",
+        "total": 35.0,
+        "estado": "Pendiente"
+    },
+    {
+        "id": "P-1050",
+        "mesa": "Mesa 02",
+        "articulos": "1x Silpancho",
+        "total": 35.0,
+        "estado": "Pendiente"
+    },
+    {
+        "id": "P-1051",
+        "mesa": "Mesa 01",
+        "articulos": "1x Jugo de naranja",
+        "total": 12.0,
+        "estado": "Entregado"
+    }
+]

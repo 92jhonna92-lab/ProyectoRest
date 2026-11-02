@@ -5,5 +5,19 @@
         "clave": "admin",
         "estado": "Activo",
         "categoria": "Administrador"
+    },
+    {
+        "id": 2,
+        "nombre": "JhonattanDelgadillo",
+        "clave": "12345",
+        "estado": "Activo",
+        "categoria": "Administrador"
+    },
+    {
+        "id": 3,
+        "nombre": "GeorgeApaza",
+        "clave": "12345",
+        "estado": "Activo",
+        "categoria": "Mesero"
     }
 ]

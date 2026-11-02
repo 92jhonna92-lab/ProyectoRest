@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "nombre": "Mesa 1",
+        "capacidad": 10,
+        "area": "Salón",
+        "estado": "Disponible",
+        "detalle": "—"
+    },
+    {
+        "id": 2,
+        "nombre": "Mesa 2",
+        "capacidad": 12,
+        "area": "Terraza",
+        "estado": "Disponible",
+        "detalle": "—"
+    },
+    {
+        "id": 3,
+        "nombre": "Mesa 3",
+        "capacidad": 4,
+        "area": "VIP",
+        "estado": "Reservada",
+        "detalle": "13:30"
+    }
+]

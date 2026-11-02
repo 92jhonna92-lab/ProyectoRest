@@ -3,6 +3,10 @@ from tkinter import messagebox
 import administrador,pantalla_usuario,funciones_login
 from menu import abrir_menu
 from usuarios import abrir_usuarios
+from pedidos import abrir_pedidos
+from ventas import abrir_ventas
+from mesas import abrir_mesas
+
 
 # estamos definiendo la ventana principal de la aplicación de login para el restaurante.
 ventana = tk.Tk()
