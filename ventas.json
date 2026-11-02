@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "hora": "11:42",
+        "vendedor": "Marcelo Gutierrez",
+        "origen": "Salón",
+        "total": 250.0,
+        "pago": "Efectivo"
+    },
+    {
+        "id": 2,
+        "hora": "15:44",
+        "vendedor": "Joselo",
+        "origen": "Delivery",
+        "total": 150.0,
+        "pago": "QR"
+    }
+]
