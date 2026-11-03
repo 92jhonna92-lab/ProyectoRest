@@ -6,6 +6,7 @@ from usuarios import abrir_usuarios
 from pedidos import abrir_pedidos
 from ventas import abrir_ventas
 from mesas import abrir_mesas
+from stock import abrir_stock
 
 
 # estamos definiendo la ventana principal de la aplicación de login para el restaurante.
