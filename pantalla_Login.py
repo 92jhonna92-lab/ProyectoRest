@@ -34,14 +34,14 @@ def iniciar_sesion():
         messagebox.showinfo("Sin acceso", f"La categoría '{cuenta['categoria']}' no tiene acceso al sistema.")
         return
 
-    ventana.withdraw()  # Oculta la ventana de login
+    ventana.withdraw() 
 
     def volver_al_login(evento):
         
         if evento.widget is ventana_dashboard:
             entry1.delete(0, tk.END)
             entry2.delete(0, tk.END)
-            ventana.deiconify()  # Muestra otra vez el login
+            ventana.deiconify() 
 
     ventana_dashboard.bind("<Destroy>", volver_al_login)
 

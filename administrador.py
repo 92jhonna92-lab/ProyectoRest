@@ -257,7 +257,7 @@ def abrir_ventana_principal(nombre_usuario,ventana):
             try:
                 mostrar_modulo("Menús")
             except tk.TclError:
-                pass    # el panel se estaba cerrando al mismo tiempo: nohay nada que redibujar
+                pass   
 
         ventana_menu.bind("<Destroy>", al_cerrar)
 
@@ -336,8 +336,7 @@ def abrir_ventana_principal(nombre_usuario,ventana):
     def dibujar_mesas():
         dibujar_encabezado("Mesas", "Consulta la disponibilidad y ocupación por área (se guardan en mesas.json).",
                            "Administrar mesas", administrar_mesas)
-        
-        # Calcular indicadores basados en los datos reales
+
         mesas_data = cargar_mesas()
         total_mesas = len(mesas_data)
         disponibles = sum(1 for m in mesas_data if m["estado"] == "Disponible")

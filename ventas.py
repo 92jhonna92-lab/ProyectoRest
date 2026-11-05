@@ -30,7 +30,6 @@ def cargar_ventas():
     except (json.JSONDecodeError, OSError):
         return []
 
-# Funciones auxiliares para cargar usuarios y menú para las ventas
 def cargar_nombres_vendedores():
     """Carga los nombres de usuarios registrados que estén activos o sean de categorías válidas."""
     if not os.path.exists(ARCHIVO_USUARIOS):
@@ -38,7 +37,6 @@ def cargar_nombres_vendedores():
     try:
         with open(ARCHIVO_USUARIOS, "r", encoding="utf-8") as archivo:
             usuarios = json.load(archivo)
-            # Filtramos por ejemplo los activos o todos los registrados
             return [u["nombre"] for u in usuarios if u.get("estado", "Activo") == "Activo"]
     except Exception:
         return ["Brayan", "Serghiño"]
@@ -112,7 +110,6 @@ def eliminar_venta(id_venta):
     guardar_ventas(nuevas_ventas)
 
 
-# --- VENTANA DE GESTIÓN DE VENTAS ---
 def abrir_ventas(ventana_padre, es_admin=False):
     ventana = tk.Toplevel(ventana_padre)
     ventana.title("Registro de Ventas")
@@ -202,7 +199,7 @@ def crear_panel_admin_ventas(ventana, tabla, refrescar):
     combo_pago.grid(row=1, column=3, padx=5, pady=5)
     combo_pago.set(METODOS_PAGO[0])
 
-    # Sección de selección múltiple del menú
+
     tk.Label(panel, text="Productos del Menú (Selección Múltiple):", bg="snow").grid(row=2, column=0, columnspan=2, padx=5, sticky="w", pady=(10, 0))
     
     marco_lista_menu = tk.Frame(panel)
@@ -214,12 +211,10 @@ def crear_panel_admin_ventas(ventana, tabla, refrescar):
     listbox_menu.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
     scrollbar_menu.pack(side=tk.RIGHT, fill=tk.Y)
 
-    # Cargar productos desde menu.json al listbox
     productos_menu = cargar_productos_menu()
     for prod in productos_menu:
         listbox_menu.insert(tk.END, f"{prod['nombre']} - Bs {prod['precio']:.2f}")
 
-    # Total calculado automáticamente
     tk.Label(panel, text="Total Calculado (Bs):", bg="snow", font=("Arial", 10, "bold")).grid(row=2, column=2, padx=5, sticky="w", pady=(10, 0))
     entrada_total = tk.Entry(panel, width=15, font=("Arial", 11, "bold"))
     entrada_total.grid(row=3, column=2, padx=5, pady=5, sticky="nw")
@@ -230,7 +225,7 @@ def crear_panel_admin_ventas(ventana, tabla, refrescar):
         suma = 0.0
         for i in indices:
             texto_prod = listbox_menu.get(i)
-            # Extraer el precio del texto (ej: "Milanesa con papas - Bs 35.00")
+            
             try:
                 precio_str = texto_prod.split("Bs ")[1]
                 suma += float(precio_str)
