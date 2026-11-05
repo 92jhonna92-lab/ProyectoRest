@@ -7,6 +7,7 @@ from usuarios import abrir_usuarios, cargar_usuarios
 from ventas import abrir_ventas, cargar_ventas
 from mesas import abrir_mesas, cargar_mesas
 from pedidos import abrir_pedidos, cargar_pedidos
+from stock import abrir_stock, cargar_stock
 
 def abrir_ventana_principal(nombre_usuario,ventana):
     ventana_principal = tk.Toplevel(ventana)
@@ -256,7 +257,7 @@ def abrir_ventana_principal(nombre_usuario,ventana):
             try:
                 mostrar_modulo("Menús")
             except tk.TclError:
-                pass    # el panel se estaba cerrando al mismo tiempo: nohay nada que redibujar
+                pass   
 
         ventana_menu.bind("<Destroy>", al_cerrar)
 
@@ -288,31 +289,35 @@ def abrir_ventana_principal(nombre_usuario,ventana):
         dibujar_tabla(caja_menu, ("ID", "Nombre", "Categoría", "Precio"), filas, altura=12)
 
 
-
-
-
-    def administrar_ventas():
+    def administrar_ventas(ventana_principal, modulo_actual, mostrar_modulo_func):
         ventana_ventas = abrir_ventas(ventana_principal, es_admin=True)
 
         def al_cerrar(evento):
             if evento.widget is not ventana_ventas or modulo_actual != "Ventas":
                 return
             try:
-                mostrar_modulo("Ventas")
+                mostrar_modulo_func("Ventas")
             except tk.TclError:
                 pass
 
         ventana_ventas.bind("<Destroy>", al_cerrar)
 
-    def dibujar_ventas():
-        dibujar_encabezado("Ventas", "Consulta transacciones y registra nuevas ventas (se guardan en ventas.json).",
-                           "Administrar ventas", administrar_ventas)
+
+    def dibujar_ventas(area_contenido, dibujar_encabezado_func, dibujar_tabla_func, administrar_ventas_func):
+        dibujar_encabezado_func("Ventas", "Consulta transacciones y registra nuevas ventas (se guardan en ventas.json).",
+                       "Administrar ventas", administrar_ventas_func)
         caja_ventas = ttk.LabelFrame(area_contenido, text="Transacciones recientes", padding=10)
         caja_ventas.pack(fill="both", expand=True)
 
         filas = [(v["id"], v["hora"], v["vendedor"], v["origen"], f"Bs {v['total']:.2f}", v["pago"])
-                for v in cargar_ventas()] ##2222
-        dibujar_tabla(caja_ventas, ("ID", "Hora", "Vendedor", "Origen", "Total", "Método Pago"), filas, altura=12)
+                for v in cargar_ventas()]
+        dibujar_tabla_func(caja_ventas, ("ID", "Hora", "Vendedor", "Origen", "Total", "Método Pago"), filas, altura=12)
+
+
+
+
+
+    
 
 
     def administrar_mesas():
@@ -331,8 +336,7 @@ def abrir_ventana_principal(nombre_usuario,ventana):
     def dibujar_mesas():
         dibujar_encabezado("Mesas", "Consulta la disponibilidad y ocupación por área (se guardan en mesas.json).",
                            "Administrar mesas", administrar_mesas)
-        
-        # Calcular indicadores basados en los datos reales
+
         mesas_data = cargar_mesas()
         total_mesas = len(mesas_data)
         disponibles = sum(1 for m in mesas_data if m["estado"] == "Disponible")
@@ -377,6 +381,39 @@ def abrir_ventana_principal(nombre_usuario,ventana):
                 for p in cargar_pedidos()]
         dibujar_tabla(caja_pedidos, ("Pedido", "Mesa o canal", "Artículos", "Total", "Estado"), filas, altura=12)
 
+
+    def administrar_stock(ventana_principal, modulo_actual, mostrar_modulo_func):
+    
+        ventana_stock = abrir_stock(ventana_principal, es_admin=True)
+
+        def al_cerrar(evento):
+            if evento.widget is not ventana_stock or modulo_actual != "Stock":
+                return
+            try:
+                mostrar_modulo_func("Stock")
+            except tk.TclError:
+                pass
+
+        ventana_stock.bind("<Destroy>", al_cerrar)
+
+    def dibujar_stock(area_contenido, dibujar_encabezado_func, dibujar_tabla_func, administrar_stock_func):
+        dibujar_encabezado_func("Stock", "Controla existencias y productos por debajo del mínimo (se guardan en stock.json).[cite: 3]",
+                        "+  Nuevo producto", administrar_stock_func)
+    
+        caja_stock = ttk.LabelFrame(area_contenido, text="Registros", padding=10)
+        caja_stock.pack(fill="both", expand=True)
+
+        filas = [(s["id"], s["producto"], s["categoria"], s["cantidad"], s["estado"])
+                for s in cargar_stock()]
+        dibujar_tabla_func(caja_stock, ("Código", "Producto", "Categoría", "Cantidad", "Estado"), filas, altura=12)
+
+
+
+
+
+
+    
+
     def mostrar_modulo(nombre):
         nonlocal modulo_actual, area_contenido, encabezado
         modulo_actual = nombre
@@ -402,13 +439,20 @@ def abrir_ventana_principal(nombre_usuario,ventana):
         elif nombre == "Finanzas":
             dibujar_finanzas()
         elif nombre == "Stock":
-            dibujar_pantalla_crud("Stock", "Controla existencias y productos por debajo del mínimo.",
-                                ("Código", "Producto", "Categoría", "Cantidad", "Estado"), datos["Stock"],
-                                (("Categoría", ("Todas", "Carnes", "Verduras", "Lácteos")),
-                                ("Estado", ("Todos", "Normal", "Bajo"))), "Nuevo producto")
+            dibujar_stock(
+                area_contenido, 
+                dibujar_encabezado, 
+                dibujar_tabla, 
+                lambda: administrar_stock(ventana_principal, modulo_actual, mostrar_modulo)
+            )
         elif nombre == "Usuarios":
             dibujar_usuarios()
         elif nombre == "Ventas":
-            dibujar_ventas()
+            dibujar_ventas(
+                area_contenido, 
+                dibujar_encabezado, 
+                dibujar_tabla, 
+                lambda: administrar_ventas(ventana_principal, modulo_actual, mostrar_modulo)
+            )
     mostrar_modulo("Resumen")
     return ventana_principal

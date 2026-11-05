@@ -148,9 +148,7 @@ def abrir_menu(ventana_padre, es_admin=False):
             )
  
     filtro.bind("<<ComboboxSelected>>", lambda evento: refrescar())
- 
-    # Se empaqueta primero lo de abajo para que los botones siempre se vean;
-    # la tabla (que se estira) va al final y usa el espacio que sobre.
+
     tk.Button(ventana, text="Cerrar", command=ventana.destroy).pack(side=tk.BOTTOM, pady=10)
     if es_admin:
         crear_panel_admin(ventana, tabla, refrescar, filtro)

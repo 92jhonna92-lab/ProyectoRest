@@ -1,0 +1,37 @@
+[
+    {
+        "id": "ST-04",
+        "producto": "Carne de res",
+        "categoria": "Carnes",
+        "cantidad": "8 kg",
+        "estado": "Bajo"
+    },
+    {
+        "id": "ST-05",
+        "producto": "Lechuga",
+        "categoria": "Verduras",
+        "cantidad": "3 kg",
+        "estado": "Normal"
+    },
+    {
+        "id": "ST-06",
+        "producto": "Leche papu",
+        "categoria": "Lácteos",
+        "cantidad": "1L",
+        "estado": "Bajo"
+    },
+    {
+        "id": "ST-07",
+        "producto": "Coca Cola",
+        "categoria": "Bebidas",
+        "cantidad": "40 u",
+        "estado": "Normal"
+    },
+    {
+        "id": "ST-08",
+        "producto": "Arroz",
+        "categoria": "Abarrotes",
+        "cantidad": "20 Kg",
+        "estado": "Normal"
+    }
+]

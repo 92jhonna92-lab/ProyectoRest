@@ -3,7 +3,6 @@ from tkinter import ttk, messagebox
 import json
 import os
 
-# --- PERSISTENCIA Y LÓGICA DE MENÚ Y PEDIDOS ---
 ARCHIVO_MENU = os.path.join(os.path.dirname(os.path.abspath(__file__)), "menu.json")
 ARCHIVO_PEDIDOS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pedidos.json")
 
@@ -106,8 +105,6 @@ def eliminar_pedido(id_pedido):
         raise ValueError("Ese pedido ya no existe.")
     guardar_pedidos(nuevos_pedidos)
 
-
-# --- VENTANA DE GESTIÓN DE PEDIDOS ---
 def abrir_pedidos(ventana_padre, es_admin=False):
     ventana = tk.Toplevel(ventana_padre)
     ventana.title("Gestión de Pedidos")
@@ -191,8 +188,7 @@ def crear_panel_admin_pedidos(ventana, tabla, refrescar):
     combo_mesa.grid(row=1, column=1, padx=5, pady=5)
 
     tk.Label(panel, text="Seleccionar del Menú", bg="snow").grid(row=0, column=2, padx=5)
-    
-    # Menú desplegable para elegir productos desde menu.json
+
     menu_disponible = cargar_menu()
     opciones_menu = [f"{m['nombre']} (Bs {m['precio']:.2f})" for m in menu_disponible]
     combo_menu = ttk.Combobox(panel, values=opciones_menu, state="readonly", width=24)
@@ -210,12 +206,11 @@ def crear_panel_admin_pedidos(ventana, tabla, refrescar):
     combo_estado = ttk.Combobox(panel, values=ESTADOS_PEDIDOS, state="readonly", width=14)
     combo_estado.grid(row=3, column=3, padx=5, pady=5)
 
-    # Función para autocompletar artículos y sumar precio al elegir del menú
+
     def al_elegir_menu(evento):
         seleccion = combo_menu.get()
         if not seleccion:
             return
-        # Buscar el producto seleccionado
         for m in menu_disponible:
             if f"{m['nombre']} (Bs {m['precio']:.2f})" == seleccion:
                 actual_art = entrada_articulos.get().strip()
