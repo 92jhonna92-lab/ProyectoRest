@@ -1,10 +1,4 @@
-"""Ventanas del mesero (tkinter): tomar un pedido y ver/actualizar sus pedidos.
 
-    abrir_nuevo_pedido(ventana, "Zabala")   # el mesero toma un pedido
-    abrir_mis_pedidos(ventana, "Zabala")    # ve y actualiza SUS pedidos
-
-La lógica (guardar, cambiar de estado, registrar la venta) está en pedidos_mesero.py.
-"""
 import tkinter as tk
 from tkinter import messagebox, ttk
 
@@ -28,11 +22,11 @@ def abrir_nuevo_pedido(ventana_padre, mesero, al_guardar=None):
 
     tk.Label(ventana, text="Nuevo pedido", font=("Arial", 22), bg="snow").pack(pady=10)
 
-    # Lo de abajo se empaqueta primero (side=BOTTOM) para que los botones siempre se vean.
+    
     barra_final = tk.Frame(ventana, bg="snow")
     barra_final.pack(side=tk.BOTTOM, pady=10)
 
-    # --- ¿Qué mesa o canal? (las mismas opciones que usa el administrador) ---
+   
     marco_canal = tk.Frame(ventana, bg="snow")
     marco_canal.pack(pady=5)
     tk.Label(marco_canal, text="Mesa o canal:", bg="snow").pack(side=tk.LEFT, padx=5)
@@ -43,7 +37,7 @@ def abrir_nuevo_pedido(ventana_padre, mesero, al_guardar=None):
     cuerpo = tk.Frame(ventana, bg="snow")
     cuerpo.pack(padx=20, pady=10, fill=tk.BOTH, expand=True)
 
-    # --- Izquierda: productos del menú ---
+    
     izquierda = tk.LabelFrame(cuerpo, text="Menú", bg="snow", padx=8, pady=8)
     izquierda.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
 
@@ -73,14 +67,14 @@ def abrir_nuevo_pedido(ventana_padre, mesero, al_guardar=None):
         for p in cargar_menu():
             if filtro.get() != "todos" and p["categoria"] != filtro.get():
                 continue
-            # iid = id del producto: así sabemos cuál se eligió sin buscar por nombre.
+           
             tabla_menu.insert("", tk.END, iid=str(p["id"]),
                               values=(p["nombre"], f"Bs {p['precio']:.2f}",
                                       p["categoria"].capitalize()))
 
     filtro.bind("<<ComboboxSelected>>", lambda evento: llenar_menu())
 
-    # --- Derecha: lo que lleva el pedido ---
+  
     derecha = tk.LabelFrame(cuerpo, text="Pedido", bg="snow", padx=8, pady=8)
     derecha.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
@@ -100,7 +94,7 @@ def abrir_nuevo_pedido(ventana_padre, mesero, al_guardar=None):
     tabla_pedido.column("subtotal", width=90, anchor="center")
     tabla_pedido.pack(fill=tk.BOTH, expand=True)
 
-    # Lo que lleva el pedido: {id del producto: {"id", "nombre", "precio", "cantidad"}}
+   
     items = {}
 
     def refrescar_pedido():
@@ -126,7 +120,7 @@ def abrir_nuevo_pedido(ventana_padre, mesero, al_guardar=None):
                                  parent=ventana)
             return
         id_producto = int(seleccion[0])
-        if id_producto in items:                     # si ya estaba, solo se suma
+        if id_producto in items:                     
             items[id_producto]["cantidad"] += cuantos
         else:
             producto = next(p for p in cargar_menu() if p["id"] == id_producto)
@@ -172,9 +166,7 @@ def abrir_nuevo_pedido(ventana_padre, mesero, al_guardar=None):
     return ventana
 
 
-# ---------------------------------------------------------------------------
-# Mis pedidos
-# ---------------------------------------------------------------------------
+
 
 COLORES_ESTADO = {
     pm.PENDIENTE: "#b45309",       # ámbar oscuro
@@ -193,7 +185,7 @@ def pedir_pago(ventana_padre):
     dialogo.geometry("300x150")
     dialogo.configure(bg="snow")
     dialogo.transient(ventana_padre)
-    dialogo.grab_set()                      # no deja tocar la ventana de atrás
+    dialogo.grab_set()                      
 
     tk.Label(dialogo, text="Método de pago:", bg="snow").pack(pady=(15, 5))
     combo = ttk.Combobox(dialogo, values=ventas.METODOS_PAGO, state="readonly", width=15)
@@ -211,7 +203,7 @@ def pedir_pago(ventana_padre):
     barra.pack(pady=15)
     tk.Button(barra, text="Cobrar", width=9, command=aceptar).pack(side=tk.LEFT, padx=5)
     tk.Button(barra, text="Cancelar", width=9, command=dialogo.destroy).pack(side=tk.LEFT, padx=5)
-    dialogo.wait_window()                   # espera hasta que se cierre
+    dialogo.wait_window()                  
     return elegido[0] if elegido else None
 
 
@@ -224,13 +216,13 @@ def abrir_mis_pedidos(ventana_padre, mesero):
 
     tk.Label(ventana, text="Mis pedidos", font=("Arial", 22), bg="snow").pack(pady=10)
 
-    # Botones y resumen abajo: se empaquetan antes que la tabla para que siempre se vean.
+    
     barra_botones = tk.Frame(ventana, bg="snow")
     barra_botones.pack(side=tk.BOTTOM, pady=10)
     texto_resumen = tk.StringVar()
     tk.Label(ventana, textvariable=texto_resumen, bg="snow").pack(side=tk.BOTTOM)
 
-    # --- Filtros ---
+  
     barra = tk.Frame(ventana, bg="snow")
     barra.pack(pady=5)
     tk.Label(barra, text="Estado:", bg="snow").pack(side=tk.LEFT, padx=5)
@@ -242,7 +234,7 @@ def abrir_mis_pedidos(ventana_padre, mesero):
     tk.Checkbutton(barra, text="Solo los de hoy", variable=solo_hoy, bg="snow",
                    command=lambda: refrescar()).pack(side=tk.LEFT, padx=15)
 
-    # --- Tabla ---
+  
     marco = tk.Frame(ventana, bg="snow")
     marco.pack(padx=20, pady=10, fill=tk.BOTH, expand=True)
     tabla = ttk.Treeview(marco, columns=("id", "fecha", "mesa", "articulos", "total", "estado"),
@@ -290,7 +282,7 @@ def abrir_mis_pedidos(ventana_padre, mesero):
         if id_pedido is None:
             return
         try:
-            pm.validar_cambio(id_pedido, nuevo_estado)      # avisa antes de preguntar nada más
+            pm.validar_cambio(id_pedido, nuevo_estado)      
         except ValueError as error:
             messagebox.showerror("Error", str(error), parent=ventana)
             return
