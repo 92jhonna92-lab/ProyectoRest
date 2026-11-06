@@ -8,6 +8,7 @@ from ventas import abrir_ventas, cargar_ventas
 from mesas import abrir_mesas, cargar_mesas
 from pedidos import abrir_pedidos, cargar_pedidos
 from stock import abrir_stock, cargar_stock
+import informes
 
 def abrir_ventana_principal(nombre_usuario,ventana):
     ventana_principal = tk.Toplevel(ventana)
@@ -200,15 +201,46 @@ def abrir_ventana_principal(nombre_usuario,ventana):
         dibujar_acciones(tabla)
 
     def dibujar_resumen():
-        dibujar_encabezado("Resumen del restaurante", "Vista general de la operación de hoy",
+        """Resumen con datos reales: se calcula con informes.py a partir de los .json."""
+        pedidos = cargar_pedidos()
+        ventas = cargar_ventas()
+        r = informes.resumen_general(pedidos, ventas, cargar_mesas(), cargar_stock())
+        dibujar_encabezado("Resumen del restaurante", "Vista general con los datos registrados",
                         "+  Registrar venta", lambda: mostrar_modulo("Ventas"))
-        dibujar_indicadores(area_contenido, (("VENTAS DE HOY", "Bs 2.480,50", "31 transacciones"),
-                                            ("PEDIDOS ACTIVOS", "12", "3 requieren atención"),
-                                            ("MESAS DISPONIBLES", "5", "de 12 mesas"),
-                                            ("STOCK BAJO", "2 productos", "Revisar inventario")))
+        dibujar_indicadores(area_contenido, (
+            ("VENTAS REGISTRADAS", f"Bs {r['total_ventas']:.2f}", f"{r['cantidad_ventas']} transacciones"),
+            ("PEDIDOS ACTIVOS", str(r["pedidos_activos"]), f"{r['pedidos_pendientes']} pendientes"),
+            ("MESAS DISPONIBLES", str(r["mesas_disponibles"]), f"de {r['mesas_total']} mesas"),
+            ("STOCK BAJO", f"{len(r['stock_bajo'])} productos",
+             ", ".join(r["stock_bajo"][:2]) or "Todo en orden")))
+
+        # Dos tablas lado a lado: qué se vendió más y quién vendió más.
+        fila = ttk.Frame(area_contenido)
+        fila.pack(fill="both", expand=True)
+        fila.columnconfigure(0, weight=1)
+        fila.columnconfigure(1, weight=1)
+
+        ranking = informes.ranking_productos(pedidos, cargar_menu())
+        caja_platos = ttk.LabelFrame(fila, text="Platos más vendidos", padding=10)
+        caja_platos.grid(row=0, column=0, sticky="nsew", padx=(0, 6))
+        dibujar_tabla(caja_platos, ("Producto", "Vendidos", "Total"),
+                      [(n, c, f"Bs {m:.2f}") for n, c, m in ranking[:5]], altura=5)
+        if ranking and ranking[0][1] > 0:
+            ttk.Label(caja_platos, text=f"Más vendido: {ranking[0][0]} ({ranking[0][1]})   |   "
+                      f"Menos vendido: {ranking[-1][0]} ({ranking[-1][1]})").pack(anchor="w", pady=(6, 0))
+        else:
+            ttk.Label(caja_platos, text="Todavía no hay pedidos entregados o cobrados.").pack(anchor="w", pady=(6, 0))
+
+        caja_vendedores = ttk.LabelFrame(fila, text="Quién vendió más", padding=10)
+        caja_vendedores.grid(row=0, column=1, sticky="nsew", padx=(6, 0))
+        dibujar_tabla(caja_vendedores, ("Vendedor", "Ventas", "Total"),
+                      [(n, c, f"Bs {t:.2f}") for n, c, t in informes.ranking_vendedores(ventas)[:5]], altura=5)
+
         recientes = ttk.LabelFrame(area_contenido, text="Pedidos recientes", padding=10)
-        recientes.pack(fill="both", expand=True)
-        dibujar_tabla(recientes, ("Pedido", "Mesa", "Artículos", "Total", "Estado"), datos["Pedidos"], altura=6)
+        recientes.pack(fill="both", expand=True, pady=(12, 0))
+        dibujar_tabla(recientes, ("Pedido", "Mesa", "Artículos", "Total", "Estado"),
+                      [(p["id"], p["mesa"], p["articulos"], f"Bs {p['total']:.2f}", p["estado"])
+                       for p in reversed(pedidos[-5:])], altura=4)
 
     def dibujar_mesas():
         dibujar_encabezado("Mesas", "Consulta la disponibilidad y ocupación del salón",
