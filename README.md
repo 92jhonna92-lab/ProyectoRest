@@ -16,10 +16,10 @@ Ejecuta `main.py` para iniciar la aplicación.
 - `categorias.py`: gestión de categorías.
 
 ## Roles
-- **Administrador**: gestiona menú, usuarios, categorías, pedidos, mesas, ventas y stock.
+- **Administrador**: gestiona menú, usuarios, categorías, pedidos, mesas, ventas y stock
 - **Mesero**: toma pedidos (por mesa o para llevar), los marca como entregados o cancelados y los cobra. Al cobrar se registra la venta automáticamente.
 
-Usuario inicial: `admin` / `admin`. El administrador crea los meseros desde Usuarios.
+Usuario inicial: `admin` / `admin`. El administrador crea los meseros desde Usuarios
 
 ## Datos
-Los archivos JSON almacenan los datos del proyecto. Haz una copia de seguridad de `usuarios.json` y `menu.json` antes de reemplazarlos.
+Los archivos JSON almacenan los datos del proyecto
