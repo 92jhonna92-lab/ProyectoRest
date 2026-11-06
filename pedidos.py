@@ -6,7 +6,7 @@ import os
 ARCHIVO_MENU = os.path.join(os.path.dirname(os.path.abspath(__file__)), "menu.json")
 ARCHIVO_PEDIDOS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pedidos.json")
 
-ESTADOS_PEDIDOS = ["Pendiente", "En preparación", "Listo", "Entregado"]
+ESTADOS_PEDIDOS = ["Pendiente", "En preparación", "Listo", "Entregado", "Cobrado", "Cancelado"]
 CANALES_PEDIDO = ["Mesa 01", "Mesa 02", "Mesa 03", "Mesa 04", "Para llevar", "Delivery"]
 
 MENU_INICIALES = [
