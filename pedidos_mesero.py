@@ -1,27 +1,4 @@
-"""Pedidos del mesero: solo la lógica y los datos, sin ventanas.
 
-Usa el mismo archivo y el mismo formato que el módulo Pedidos del administrador
-(pedidos.py), así los pedidos del mesero aparecen en el dashboard sin cambiar nada.
-
-Un pedido del mesero se guarda en pedidos.json así:
-
-    {
-        "id": "P-1052",                    # igual que los del administrador
-        "mesa": "Mesa 04",                 # mesa o canal ("Para llevar", "Delivery")
-        "articulos": "2x Silpancho, 1x Refresco",
-        "total": 80.0,
-        "estado": "Pendiente",
-        "mesero": "Zabala",                # datos extra (solo los pedidos del mesero)
-        "fecha": "2026-11-05T19:30:00",
-        "items": [{"id": 1, "nombre": "Silpancho", "precio": 35.0, "cantidad": 2}, ...]
-    }
-
-"items" guarda el precio de ESE momento: si luego se cambia el precio en el menú,
-los informes viejos no se alteran. También es lo que permitirá el informe de lo
-más y lo menos vendido.
-
-Al cobrar un pedido se registra solo una venta en ventas.json.
-"""
 from datetime import datetime
 
 import pedidos
@@ -30,7 +7,7 @@ import ventas
 PENDIENTE, EN_PREPARACION, LISTO = "Pendiente", "En preparación", "Listo"
 ENTREGADO, COBRADO, CANCELADO = "Entregado", "Cobrado", "Cancelado"
 
-# Para pasar al estado de la izquierda, el pedido tiene que estar en uno de la derecha.
+
 DESDE = {
     ENTREGADO: (PENDIENTE, EN_PREPARACION, LISTO),
     COBRADO: (ENTREGADO,),
@@ -52,7 +29,6 @@ def total_items(items):
 
 
 def siguiente_codigo(lista):
-    """Código nuevo: P-<número siguiente>. Respeta los códigos que ya existen."""
     numeros = []
     for p in lista:
         texto = str(p["id"])
@@ -62,10 +38,7 @@ def siguiente_codigo(lista):
 
 
 def crear_pedido(mesero, canal, items):
-    """Guarda un pedido nuevo (queda Pendiente). Lanza ValueError si algo falla.
-
-    items es una lista de {"id", "nombre", "precio", "cantidad"}.
-    """
+ 
     if canal not in pedidos.CANALES_PEDIDO:
         raise ValueError("Elige la mesa o el canal del pedido.")
     if not items:
@@ -94,13 +67,12 @@ def crear_pedido(mesero, canal, items):
 
 
 def origen_de_venta(canal):
-    """Pasa el canal del pedido al 'origen' que usa el módulo Ventas."""
+   
     return canal if canal in ("Para llevar", "Delivery") else "Salón"
 
 
 def validar_cambio(id_pedido, nuevo_estado):
-    """Lanza ValueError si el pedido no existe o no puede pasar a ese estado.
-    La ventana lo usa ANTES de preguntar el método de pago."""
+   
     for pedido in pedidos.cargar_pedidos():
         if pedido["id"] == id_pedido:
             if pedido["estado"] not in DESDE.get(nuevo_estado, ()):
@@ -111,10 +83,7 @@ def validar_cambio(id_pedido, nuevo_estado):
 
 
 def cambiar_estado(id_pedido, nuevo_estado, pago=None):
-    """Pasa un pedido a otro estado respetando el orden permitido.
-
-    Al pasar a Cobrado hay que decir cómo se pagó (pago) y se registra una venta.
-    """
+    
     validar_cambio(id_pedido, nuevo_estado)
     lista = pedidos.cargar_pedidos()
     for pedido in lista:
@@ -132,7 +101,7 @@ def cambiar_estado(id_pedido, nuevo_estado, pago=None):
 
 
 def pedidos_de(mesero, fecha=None, estado=None):
-    """Pedidos de un mesero, los más nuevos primero. fecha: 'AAAA-MM-DD' o None."""
+    
     resultado = []
     for p in pedidos.cargar_pedidos():
         if p.get("mesero") != mesero:
