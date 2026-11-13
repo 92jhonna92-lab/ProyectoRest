@@ -19,5 +19,33 @@
         "articulos": "1x Jugo de naranja",
         "total": 12.0,
         "estado": "Entregado"
+    },
+    {
+        "id": "P-1052",
+        "mesa": "Para llevar",
+        "articulos": "1x Silpancho",
+        "total": 35.0,
+        "estado": "Entregado"
+    },
+    {
+        "id": "P-1053",
+        "mesa": "Delivery",
+        "articulos": "1x Torta de chocolate",
+        "total": 18.0,
+        "estado": "En preparación"
+    },
+    {
+        "id": "P-1054",
+        "mesa": "Delivery",
+        "articulos": "1x Cerveza",
+        "total": 20.0,
+        "estado": "Entregado"
+    },
+    {
+        "id": "P-1055",
+        "mesa": "Para llevar",
+        "articulos": "1x Sopa de maní",
+        "total": 25.0,
+        "estado": "Listo"
     }
 ]

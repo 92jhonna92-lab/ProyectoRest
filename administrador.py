@@ -8,6 +8,7 @@ from ventas import abrir_ventas, cargar_ventas
 from mesas import abrir_mesas, cargar_mesas
 from pedidos import abrir_pedidos, cargar_pedidos
 from stock import abrir_stock, cargar_stock
+from reportes import abrir_reportes_financieros, cargar_datos_ventas
 import informes
 
 def abrir_ventana_principal(nombre_usuario,ventana):
@@ -56,7 +57,7 @@ def abrir_ventana_principal(nombre_usuario,ventana):
     ttk.Separator(panel_lateral).grid(row=2, column=0, sticky="ew", pady=(0, 14))
     ttk.Label(panel_lateral, text="MÓDULOS", font=("TkDefaultFont", 9, "bold")).grid(row=3, column=0, sticky="w", pady=(0, 8))
 
-    modulos = ("Resumen", "Menús", "Pedidos", "Mesas", "Finanzas", "Stock", "Usuarios", "Ventas")
+    modulos = ("Resumen", "Menús", "Pedidos", "Mesas", "Reportes", "Stock", "Usuarios", "Ventas")
 
     for numero_fila, nombre_modulo in enumerate(modulos, start=4):
         boton = ttk.Button(panel_lateral, text=nombre_modulo,
@@ -254,8 +255,8 @@ def abrir_ventana_principal(nombre_usuario,ventana):
         tabla = dibujar_tabla(caja_mesas, ("Mesa", "Capacidad", "Estado", "Pedido o reserva"), datos["Mesas"])
         dibujar_acciones(tabla)
 
-    def dibujar_finanzas():
-        dibujar_encabezado("Finanzas", "Reportes de ingresos y gastos por periodo",
+    def dibujar_reportes():
+        dibujar_encabezado("Reportes", "Reportes de ingresos y gastos por periodo",
                         "Exportar reporte", lambda: messagebox.showinfo("Reporte", "Aquí conectarías la exportación."))
         dibujar_barra_filtros(area_contenido, (("Periodo", ("Este mes", "Hoy", "Esta semana", "Personalizado")),
                                             ("Tipo", ("Todos", "Ventas", "Gastos"))))
@@ -440,7 +441,42 @@ def abrir_ventana_principal(nombre_usuario,ventana):
         dibujar_tabla_func(caja_stock, ("Código", "Producto", "Categoría", "Cantidad", "Estado"), filas, altura=12)
 
 
+    def dibujar_finanzas_dashboard(area_contenido, dibujar_encabezado, dibujar_indicadores, dibujar_tabla, ventana_principal):
+        df_ventas = cargar_datos_ventas()
 
+        total_ingresos = df_ventas["total"].sum() if not df_ventas.empty and "total" in df_ventas.columns else 0.0
+        vendedor_top = df_ventas["vendedor"].mode()[0] if not df_ventas.empty and not df_ventas["vendedor"].empty else "N/A"
+        pago_top = df_ventas["pago"].mode()[0] if not df_ventas.empty and not df_ventas["pago"].empty else "N/A"
+        origen_top = df_ventas["origen"].mode()[0] if not df_ventas.empty and not df_ventas["origen"].empty else "N/A"
+
+        dibujar_encabezado(
+            "Finanzas y Rendimiento",
+            "Análisis analítico y métricas de ventas procesadas con Pandas",
+            "Ver Reporte Gráfico Completo",
+            lambda: abrir_reportes_financieros(ventana_principal)
+        )
+
+        dibujar_indicadores(area_contenido, (
+            ("INGRESOS TOTALES", f"Bs {total_ingresos:,.2f}", f"{len(df_ventas)} transacciones"),
+            ("VENDEDOR LÍDER", vendedor_top, "Mayor volumen registrado"),
+            ("PAGO FAVORITO", pago_top, "Método más frecuente"),
+            ("ORIGEN PRINCIPAL", origen_top, "Canal de mayor demanda")
+        ))
+
+        caja_reporte = ttk.LabelFrame(area_contenido, text="Desglose de Ventas por Vendedor (Pandas)", padding=10)
+        caja_reporte.pack(fill="both", expand=True)
+
+        filas_tabla = []
+        if not df_ventas.empty and "vendedor" in df_ventas.columns:
+            agrupado = df_ventas.groupby("vendedor").agg(
+                transacciones=("id", "count"),
+                recaudado=("total", "sum")
+            ).reset_index()
+
+            for _, fila in agrupado.iterrows():
+                filas_tabla.append((fila["vendedor"], str(fila["transacciones"]), f"Bs {fila['recaudado']:,.2f}"))
+
+        dibujar_tabla(caja_reporte, ("Vendedor", "Ventas Realizadas", "Total Recaudado"), filas_tabla, altura=6)
 
 
 
@@ -468,8 +504,14 @@ def abrir_ventana_principal(nombre_usuario,ventana):
             dibujar_pedidos()
         elif nombre == "Mesas":
             dibujar_mesas()
-        elif nombre == "Finanzas":
-            dibujar_finanzas()
+        elif nombre == "Reportes":
+            dibujar_finanzas_dashboard(
+                area_contenido,
+                dibujar_encabezado,
+                dibujar_indicadores,
+                dibujar_tabla,
+                ventana_principal
+            )
         elif nombre == "Stock":
             dibujar_stock(
                 area_contenido, 
