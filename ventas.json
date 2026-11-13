@@ -6,5 +6,61 @@
         "origen": "Salón",
         "total": 49.0,
         "pago": "Efectivo"
+    },
+    {
+        "id": 4,
+        "hora": "05:22",
+        "vendedor": "JhonattanDelgadillo",
+        "origen": "Delivery",
+        "total": 77.0,
+        "pago": "QR"
+    },
+    {
+        "id": 5,
+        "hora": "05:23",
+        "vendedor": "GeorgeApaza",
+        "origen": "Para llevar",
+        "total": 47.0,
+        "pago": "Tarjeta"
+    },
+    {
+        "id": 6,
+        "hora": "05:23",
+        "vendedor": "GeorgeApaza",
+        "origen": "Salón",
+        "total": 67.0,
+        "pago": "Efectivo"
+    },
+    {
+        "id": 7,
+        "hora": "05:23",
+        "vendedor": "JhonattanDelgadillo",
+        "origen": "Salón",
+        "total": 137.0,
+        "pago": "Efectivo"
+    },
+    {
+        "id": 8,
+        "hora": "05:23",
+        "vendedor": "GeorgeApaza",
+        "origen": "Salón",
+        "total": 18.0,
+        "pago": "QR"
+    },
+    {
+        "id": 9,
+        "hora": "05:25",
+        "vendedor": "GeorgeApaza",
+        "origen": "Para llevar",
+        "total": 38.0,
+        "pago": "Tarjeta"
+    },
+    {
+        "id": 10,
+        "hora": "05:25",
+        "vendedor": "JhonattanDelgadillo",
+        "origen": "Salón",
+        "total": 77.0,
+        "pago": "Efectivo"
     }
 ]
